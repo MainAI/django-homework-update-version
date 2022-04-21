@@ -5,16 +5,18 @@ from django.urls import reverse
 import csv
 
 
+station_list = []
+with open(settings.BUS_STATION_CSV, newline='', encoding='UTF-8') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        station_list.append({'Name': row['Name'], 'Street': row['Street'], 'District': row['District']})
+
+
 def index(request):
     return redirect(reverse('bus_stations'))
 
 
 def bus_stations(request):
-    station_list = []
-    with open(settings.BUS_STATION_CSV, newline='', encoding='UTF-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            station_list.append({'Name': row['Name'], 'Street': row['Street'], 'District': row['District']})
     paginator = Paginator(station_list, 10)
     current_page = int(request.GET.get('page', 1))
     page = paginator.get_page(current_page)
