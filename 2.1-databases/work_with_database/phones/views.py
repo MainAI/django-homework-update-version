@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Phone
 
 
@@ -8,13 +8,14 @@ def index(request):
 
 def show_catalog(request):
     product = Phone.objects.all()
+    SORT_MAP = {
+        'name': 'name',
+        'min_price': 'price',
+        'max_price': '-price',
+    }
     sort_by = request.GET.get('sort')
-    if sort_by == 'name':
-        product = Phone.objects.all().order_by('name')
-    elif sort_by == 'min_price':
-        product = Phone.objects.all().order_by('price')
-    elif sort_by == 'max_price':
-        product = Phone.objects.all().order_by('-price')
+    if sort_by:
+        product = product.order_by(SORT_MAP[sort_by])
     template = 'catalog.html'
     context = {'phones': product}
     return render(request, template, context)
@@ -22,5 +23,5 @@ def show_catalog(request):
 
 def show_product(request, slug):
     template = 'product.html'
-    context = {'phone': Phone.objects.get(slug=slug)}
+    context = {'phone': get_object_or_404(Phone, slug=slug)}
     return render(request, template, context)
