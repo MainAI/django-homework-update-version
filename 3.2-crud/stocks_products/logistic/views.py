@@ -13,9 +13,8 @@ class ProductViewSet(ModelViewSet):
     search_fields = ['title', 'description', ]
 
 
-
 class CustomSearchFilter(SearchFilter):
-    SEARCH_PARAM = 'products'
+    search_param = 'products'
 
 
 class StockViewSet(ModelViewSet):
@@ -24,4 +23,5 @@ class StockViewSet(ModelViewSet):
     # filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['products', ]
     filter_backends = [CustomSearchFilter]
-    search_fields = ['product']
+    search_fields = ['products__title']
+
